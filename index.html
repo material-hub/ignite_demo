@@ -425,7 +425,7 @@ summary { font-size:16px; font-weight:400; }
 @media print { #starfield,#cursor-glow,#cursor-swirl,.furnace-hero,.site-header,.site-footer,.plan-toolbar,#home,#state,.skip { display:none!important; } :root { --page:white; --panel:white; --ink:#182630; --mute:#546570; --line:#ccd5dc; } main { padding:0; } .reveal { opacity:1!important; transform:none!important; } .card.media { width:100%; margin-left:0; } .pane { animation:none!important; } }
 </style><script>
 /* Pages serves index.html with a 10 minute cache; a tab holding an older build reloads itself once. */
-window.__BUILD__ = "20261023-000500";
+window.__BUILD__ = "20261023-001500";
 (function () {
   try {
     fetch("version.json", { cache: "no-store" }).then(function (r) { return r.json(); })
@@ -478,7 +478,7 @@ window.__BUILD__ = "20261023-000500";
   #ignite-auth-gate .auth-gate-theme:hover { background: var(--soft); color: var(--ink); }
   #ignite-auth-gate .auth-gate-show { flex: 1 1 48%; min-width: 0; min-height: 560px; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid var(--line); background: var(--page); overflow: hidden; }
   #ignite-auth-gate .auth-gate-show canvas { display: block; width: 100%; height: 350px; }
-  #ignite-auth-gate .auth-gate-caption { padding: 20px 34px 34px; }
+  #ignite-auth-gate .auth-gate-caption { padding: 20px 34px 34px; text-align: center; }
   #ignite-auth-gate .auth-gate-caption p { margin: 0 0 8px; color: var(--teal); font-size: 14px; }
   #ignite-auth-gate .auth-gate-caption strong { font-size: 22px; line-height: 1.5; font-weight: 500; }
   #ignite-auth-signout { font: inherit; font-size: 13px; white-space: nowrap; padding: 8px 14px; min-height: 44px; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); color: var(--ink); cursor: pointer; }
@@ -578,7 +578,7 @@ window.__BUILD__ = "20261023-000500";
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
 
-  // Mirror ignite's actual furnace canvas rather than add a second illustration.
+  // Mirror the phase plot drawn on ignite's hero canvas (box set by drawHero).
   const source = document.getElementById('hero-grid');
   const preview = document.getElementById('ignite-auth-preview');
   const ctx = preview.getContext('2d');
@@ -589,8 +589,10 @@ window.__BUILD__ = "20261023-000500";
       const w = Math.round(preview.clientWidth * ratio), h = Math.round(preview.clientHeight * ratio);
       if (preview.width !== w || preview.height !== h) { preview.width = w; preview.height = h; }
       ctx.clearRect(0, 0, w, h);
-      const scale = Math.min(w / source.width, h / source.height);
-      ctx.drawImage(source, (w - source.width * scale) / 2, (h - source.height * scale) / 2, source.width * scale, source.height * scale);
+      const b = source.__plotBox, k = source.width / (source.clientWidth || source.width);
+      const [sx, sy, sw, sh] = b ? [b[0] * k, b[1] * k, (b[2] - b[0]) * k, (b[3] - b[1]) * k] : [0, 0, source.width, source.height];
+      const scale = Math.min(w / sw, h / sh);
+      ctx.drawImage(source, sx, sy, sw, sh, (w - sw * scale) / 2, (h - sh * scale) / 2, sw * scale, sh * scale);
     }
     frame = requestAnimationFrame(drawPreview);
   }
@@ -1386,6 +1388,7 @@ function drawHero() {
   for(let t=0;t<=span;t+=100){const y=yOf(t),major=t%300===0;hc.beginPath();hc.moveTo(x+6,y);hc.lineTo(x+(major?12:9),y);hc.stroke();if(major)hc.fillText(String(t),x+15,y);}
   hc.textAlign='center';hc.fillText('°C',x,top-22);hc.textAlign='start';}
  hc.restore();
+ heroCanvas.__plotBox=box;
  if(box)drawCurve(box,state,dark);
 }
 // Example beside the furnace: the recorded ReactCA phase evolution of SrTiO3 (ALL.example, every 10th frame).
