@@ -45,6 +45,21 @@ Claude's training data runs to June 2026, so most of these papers could be in it
 
 `index.html` is the page. `ignite_data/` holds 20 stored plans: SrTiO3, LiCoO2, CdSe0.5Te0.5, BaTiO3, BaZrS3, CaTiO3, CdTe, LiFePO4, LiNiO2, MgAl2O4, SrFeO3, BaZrO3, NaNbO3, KNbO3, LaCoO3, LaFeO3, LaAlO3, SrZrO3, CaZrO3, BaSnO3. `ignite_lite.js` is the in-browser planner. Its knowledge file is left out of this copy, so a formula outside the 20 is reported as not in the library. `version.json` lets the page reload itself after an update.
 
+## Related work checked with Valency
+
+On 22 October 2026 we searched the Valency literature index (arXiv, PubMed, ChemRxiv and other preprint servers) with three questions.
+
+1. Machine learning that recommends precursors and conditions for solid-state synthesis, work from 2024 onward.
+2. Language-model agents that plan inorganic synthesis from literature evidence, work from 2024 onward.
+3. Conformal ranges or abstention for a predicted synthesis temperature, work from 2023 onward.
+
+The first two searches returned 20 distinct works. 18 of them were already in our related-work survey of 6 October 2026, which was built from OpenAlex and arXiv. Two were new to us:
+
+- Inada, Y. et al. Elemental Reactivity Maps for Materials Discovery. Chemistry of Materials 37, 2097-2105 (2025). https://doi.org/10.1021/acs.chemmater.4c02259
+- Takahara, I., Mizoguchi, T. and Liu, B. Accelerated inorganic materials design with generative AI agents. Cell Reports Physical Science 6, 103019 (2025). https://doi.org/10.1016/j.xcrp.2025.103019
+
+The third search returned conformal methods for other properties (steel fatigue strength, void swelling, polymer glass transition, interatomic potentials). None of the returned papers puts a range on a predicted firing temperature, which is what the ignite temperature model reports.
+
 ## References
 
 ### Recipe and outcome datasets
