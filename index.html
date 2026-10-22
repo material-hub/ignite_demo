@@ -425,7 +425,7 @@ summary { font-size:16px; font-weight:400; }
 @media print { #starfield,#cursor-glow,#cursor-swirl,.furnace-hero,.site-header,.site-footer,.plan-toolbar,#home,#state,.skip { display:none!important; } :root { --page:white; --panel:white; --ink:#182630; --mute:#546570; --line:#ccd5dc; } main { padding:0; } .reveal { opacity:1!important; transform:none!important; } .card.media { width:100%; margin-left:0; } .pane { animation:none!important; } }
 </style><script>
 /* Pages serves index.html with a 10 minute cache; a tab holding an older build reloads itself once. */
-window.__BUILD__ = "20261023-003000";
+window.__BUILD__ = "20261023-004000";
 (function () {
   try {
     fetch("version.json", { cache: "no-store" }).then(function (r) { return r.json(); })
@@ -472,6 +472,7 @@ window.__BUILD__ = "20261023-003000";
   #ignite-auth-gate .auth-gate-button:disabled { opacity: .65; cursor: wait; }
   #ignite-auth-gate .auth-gate-message { min-height: 48px; margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: var(--mute); overflow-wrap: anywhere; }
   #ignite-auth-gate .auth-gate-message[data-error] { color: var(--fail); }
+  #ignite-auth-gate .auth-gate-count { margin: 0; font-size: 13px; color: var(--mute); }
   #ignite-auth-gate .auth-gate-owner { margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--line); color: var(--mute); font-size: 13px; line-height: 1.7; }
   #ignite-auth-gate .auth-gate-owner a { color: var(--teal); }
   #ignite-auth-gate .auth-gate-theme { margin-top: 12px; padding: 8px 16px; border: 0; border-radius: 999px; color: var(--mute); background: transparent; font-size: 13px; min-height: 44px; }
@@ -518,6 +519,7 @@ window.__BUILD__ = "20261023-003000";
         </svg><span>Sign in with Google</span>
       </button>
       <p id="ignite-auth-message" class="auth-gate-message" role="status" aria-live="polite">Loading sign-in. If this takes too long, check your connection and reload.</p>
+      <p id="ignite-auth-count" class="auth-gate-count" hidden></p>
       <p class="auth-gate-owner">Md Habibur Rahman<br>School of Materials Engineering, Purdue University<br><a href="mailto:imd.habiburrahman@gmail.com">imd.habiburrahman@gmail.com</a></p>
       <button id="ignite-auth-theme" class="auth-gate-theme" type="button">Switch colour theme</button>
       <noscript><p>Enable JavaScript and reload to sign in.</p></noscript>
@@ -601,6 +603,18 @@ window.__BUILD__ = "20261023-003000";
   addEventListener('pagehide', () => cancelAnimationFrame(frame));
   addEventListener('pageshow', event => { if (event.persisted) drawPreview(); });
 
+  // Public visit count from stats/ignite, shown under the sign-in message.
+  async function showCount(app) {
+    try {
+      const { getFirestore, doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      const snap = await getDoc(doc(getFirestore(app), 'stats', 'ignite'));
+      const d = snap.exists() ? snap.data() : {}, v = d.visits || 0, u = d.users || 0;
+      const el = document.getElementById('ignite-auth-count');
+      el.textContent = v.toLocaleString() + (v === 1 ? ' visit by ' : ' visits by ') + u.toLocaleString() + (u === 1 ? ' person' : ' people');
+      el.hidden = false;
+    } catch (error) {}
+  }
+
   // Count each sign-in in stats/ignite (public read); a uid seen before is not a new visitor.
   async function countVisit(app, user) {
     try {
@@ -638,6 +652,7 @@ window.__BUILD__ = "20261023-003000";
     // Kosmos requires a fresh sign-in on every load, so use memory persistence.
     const auth = initializeAuth(app, { persistence: inMemoryPersistence, popupRedirectResolver: browserPopupRedirectResolver });
     const provider = new GoogleAuthProvider();
+    showCount(app);
     onAuthStateChanged(auth, user => {
       setLocked(!user);
       if (user) countVisit(app, user);
@@ -1287,9 +1302,9 @@ function furnaceColor(T) {
  const i=Math.max(1,stops.findIndex(s=>T<=s[0])),a=stops[T>1650?5:i-1],b=stops[T>1650?6:i],u=Math.max(0,Math.min(1,(T-a[0])/(b[0]-a[0])));
  return a.slice(1).map((v,k)=>Math.round(v+(b[k+1]-v)*u));
 }
-// A 26-second illustrative cycle: dark, red, orange, yellow-orange, hold, cool.
+// A 12-second illustrative cycle: dark, red, orange, yellow-orange, hold, cool.
 function furnaceState() {
- const still=motion.matches||!heroRunning,progress=still?.48:(heroTime%26000)/26000;
+ const still=motion.matches||!heroRunning,progress=still?.48:(heroTime%12000)/12000;
  const smooth=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v);};
  const T=progress<.12?25:progress<.55?25+1175*smooth((progress-.12)/.43):progress<.72?1200:1200-1175*smooth((progress-.72)/.24);
  const reaction=smooth((progress-.24)/.48);
