@@ -425,7 +425,7 @@ summary { font-size:16px; font-weight:400; }
 @media print { #starfield,#cursor-glow,#cursor-swirl,.furnace-hero,.site-header,.site-footer,.plan-toolbar,#home,#state,.skip { display:none!important; } :root { --page:white; --panel:white; --ink:#182630; --mute:#546570; --line:#ccd5dc; } main { padding:0; } .reveal { opacity:1!important; transform:none!important; } .card.media { width:100%; margin-left:0; } .pane { animation:none!important; } }
 </style><script>
 /* Pages serves index.html with a 10 minute cache; a tab holding an older build reloads itself once. */
-window.__BUILD__ = "20261023-004000";
+window.__BUILD__ = "20261023-004500";
 (function () {
   try {
     fetch("version.json", { cache: "no-store" }).then(function (r) { return r.json(); })
@@ -1431,7 +1431,7 @@ function chemText(c,text,x,y,size,align){  // canvas text with formula digits as
 function drawCurve([x0,y0,x1,y1],state,dark){
  const g=heroCanvas.__gate?1.4:1,F=EX.frames,N=F.length,c=hc,ink=dark?'#eef3f6':'#16242d',mute=dark?'#9aa7b1':'#4b5c68',grid=dark?'rgba(255,255,255,.09)':'rgba(20,40,60,.12)';
  let idx=N-1;
- if(!state.still){if(state.progress<.55){idx=0;while(idx<EXH&&F[idx+1].T<=state.T)idx++;}else if(state.progress<.72)idx=Math.round(EXH+(N-1-EXH)*(state.progress-.55)/.17);}
+ if(!state.still){if(state.progress<.55){if(g>1)idx=Math.round(EXH*state.progress/.55);else{idx=0;while(idx<EXH&&F[idx+1].T<=state.T)idx++;}}else if(state.progress<.72)idx=Math.round(EXH+(N-1-EXH)*(state.progress-.55)/.17);}
  const L=x0+60*g,R=x1-96*g,T=y0+74*g,B=y1-40*g,S=F[N-1].s,ymax=Math.ceil(Math.max(...F.flatMap(f=>Object.values(f.f)))*4)/4;
  const X=s=>L+(R-L)*s/S,Y=v=>B-(B-T)*v/ymax;
  c.textBaseline='alphabetic';c.fillStyle=ink;chemText(c,'Phase evolution of '+EX.name,g>1?(x0+x1)/2:x0,y0+18*g,19*g,g>1?'center':'left');
