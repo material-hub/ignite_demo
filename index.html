@@ -425,7 +425,7 @@ summary { font-size:16px; font-weight:400; }
 @media print { #starfield,#cursor-glow,#cursor-swirl,.furnace-hero,.site-header,.site-footer,.plan-toolbar,#home,#state,.skip { display:none!important; } :root { --page:white; --panel:white; --ink:#182630; --mute:#546570; --line:#ccd5dc; } main { padding:0; } .reveal { opacity:1!important; transform:none!important; } .card.media { width:100%; margin-left:0; } .pane { animation:none!important; } }
 </style><script>
 /* Pages serves index.html with a 10 minute cache; a tab holding an older build reloads itself once. */
-window.__BUILD__ = "20261023-001500";
+window.__BUILD__ = "20261023-003000";
 (function () {
   try {
     fetch("version.json", { cache: "no-store" }).then(function (r) { return r.json(); })
@@ -584,6 +584,7 @@ window.__BUILD__ = "20261023-001500";
   const ctx = preview.getContext('2d');
   let frame;
   function drawPreview() {
+    source.__gate = !gate.hidden;
     if (!gate.hidden && preview.clientWidth && source.width && source.height) {
       const ratio = Math.min(devicePixelRatio || 1, 2);
       const w = Math.round(preview.clientWidth * ratio), h = Math.round(preview.clientHeight * ratio);
@@ -599,6 +600,17 @@ window.__BUILD__ = "20261023-001500";
   drawPreview();
   addEventListener('pagehide', () => cancelAnimationFrame(frame));
   addEventListener('pageshow', event => { if (event.persisted) drawPreview(); });
+
+  // Count each sign-in in stats/ignite (public read); a uid seen before is not a new visitor.
+  async function countVisit(app, user) {
+    try {
+      const { getFirestore, doc, getDoc, setDoc, increment, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+      const ref = doc(getFirestore(app), 'stats', 'ignite');
+      const snap = await getDoc(ref);
+      const seen = snap.exists() && snap.data().seen && snap.data().seen[user.uid];
+      await setDoc(ref, { visits: increment(1), users: increment(seen ? 0 : 1), seen: { [user.uid]: true }, updated: serverTimestamp() }, { merge: true });
+    } catch (error) {}
+  }
 
   function showError(error) {
     const messages = {
@@ -628,6 +640,7 @@ window.__BUILD__ = "20261023-001500";
     const provider = new GoogleAuthProvider();
     onAuthStateChanged(auth, user => {
       setLocked(!user);
+      if (user) countVisit(app, user);
       google.disabled = false;
       delete message.dataset.error;
       message.textContent = 'Use your Google account to continue.';
@@ -1401,20 +1414,20 @@ function chemText(c,text,x,y,size,align){  // canvas text with formula digits as
  parts.forEach(p=>{font(p.sub);c.fillText(p.t,px,y+(p.sub?size*.3:0));px+=c.measureText(p.t).width;});return w;
 }
 function drawCurve([x0,y0,x1,y1],state,dark){
- const F=EX.frames,N=F.length,c=hc,ink=dark?'#eef3f6':'#16242d',mute=dark?'#9aa7b1':'#4b5c68',grid=dark?'rgba(255,255,255,.09)':'rgba(20,40,60,.12)';
+ const g=heroCanvas.__gate?1.4:1,F=EX.frames,N=F.length,c=hc,ink=dark?'#eef3f6':'#16242d',mute=dark?'#9aa7b1':'#4b5c68',grid=dark?'rgba(255,255,255,.09)':'rgba(20,40,60,.12)';
  let idx=N-1;
  if(!state.still){if(state.progress<.55){idx=0;while(idx<EXH&&F[idx+1].T<=state.T)idx++;}else if(state.progress<.72)idx=Math.round(EXH+(N-1-EXH)*(state.progress-.55)/.17);}
- const L=x0+60,R=x1-96,T=y0+74,B=y1-40,S=F[N-1].s,ymax=Math.ceil(Math.max(...F.flatMap(f=>Object.values(f.f)))*4)/4;
+ const L=x0+60*g,R=x1-96*g,T=y0+74*g,B=y1-40*g,S=F[N-1].s,ymax=Math.ceil(Math.max(...F.flatMap(f=>Object.values(f.f)))*4)/4;
  const X=s=>L+(R-L)*s/S,Y=v=>B-(B-T)*v/ymax;
- c.textBaseline='alphabetic';c.fillStyle=ink;chemText(c,'Phase evolution of '+EX.name,x0,y0+18,19,'left');
- c.fillStyle=mute;chemText(c,'Example: recorded ReactCA trace, heating then a hold',x0,y0+40,13,'left');
- c.lineWidth=1;c.font='12px system-ui,-apple-system,sans-serif';
- for(let v=0;v<=ymax+1e-9;v+=.25){const y=Y(v);c.strokeStyle=grid;c.beginPath();c.moveTo(L,y);c.lineTo(R,y);c.stroke();c.fillStyle=mute;c.textAlign='right';c.fillText(String(Math.round(v*100)),L-8,y+4);}
- c.textAlign='left';c.fillText('0',L,B+16);c.textAlign='right';c.fillText(String(S),R,B+16);c.textAlign='center';c.fillText('ReactCA step',(L+R)/2,B+32);
+ c.textBaseline='alphabetic';c.fillStyle=ink;chemText(c,'Phase evolution of '+EX.name,g>1?(x0+x1)/2:x0,y0+18*g,19*g,g>1?'center':'left');
+ c.fillStyle=mute;chemText(c,'Example: recorded ReactCA trace, heating then a hold',g>1?(x0+x1)/2:x0,y0+40*g,13*g,g>1?'center':'left');
+ c.lineWidth=1;c.font=`${12*g}px system-ui,-apple-system,sans-serif`;
+ for(let v=0;v<=ymax+1e-9;v+=.25){const y=Y(v);c.strokeStyle=grid;c.beginPath();c.moveTo(L,y);c.lineTo(R,y);c.stroke();c.fillStyle=mute;c.textAlign='right';c.fillText(String(Math.round(v*100)),L-8,y+4*g);}
+ c.textAlign='left';c.fillText('0',L,B+16*g);c.textAlign='right';c.fillText(String(S),R,B+16*g);c.textAlign='center';c.fillText('ReactCA step',(L+R)/2,B+32*g);
  c.save();c.translate(x0+14,(T+B)/2);c.rotate(-Math.PI/2);c.fillText('Share of solids (%)',0,0);c.restore();
  // Start of the hold at the top temperature.
  const xh=X(F[EXH].s);c.setLineDash([3,4]);c.strokeStyle=mute;c.beginPath();c.moveTo(xh,T);c.lineTo(xh,B);c.stroke();c.setLineDash([]);
- c.fillStyle=mute;c.textAlign='left';c.fillText('hold at '+Math.round(F[EXH].T)+' °C',xh+5,T+10);
+ c.fillStyle=mute;c.textAlign='left';c.fillText('hold at '+Math.round(F[EXH].T)+' °C',xh+5,T+10*g);
  const pal=['#c9b38f','#8fa9c4','#a3b18a','#b5838d','#9c89b8','#d4a373','#7a9e9f'];let k=0;
  const colOf={};EXP.forEach(p=>colOf[p]=p===EX.name?(dark?'#5fd0c9':'#1f6f78'):pal[k++%pal.length]);
  const heads=[];
@@ -1423,11 +1436,11 @@ function drawCurve([x0,y0,x1,y1],state,dark){
   const v=F[idx].f[p]||0;c.fillStyle=colOf[p];c.beginPath();c.arc(X(F[idx].s),Y(v),main?3.6:2.6,0,Math.PI*2);c.fill();
   if(v>=(x1-x0<500?.09:.04))heads.push({p,y:Y(v),v});});
  // Labels at the line heads, pushed apart so they never overlap.
- heads.sort((a,b)=>a.y-b.y);for(let i=1;i<heads.length;i++)heads[i].y=Math.max(heads[i].y,heads[i-1].y+15);
- for(let i=heads.length-1,lim=B;i>=0;i--,lim-=15)heads[i].y=Math.min(heads[i].y,lim);
- const xl=X(F[idx].s)+8;heads.forEach(h=>{c.fillStyle=colOf[h.p];chemText(c,h.p+' '+Math.round(h.v*100)+'%',Math.min(xl,x1-90),h.y+4,13,'left');});
+ heads.sort((a,b)=>a.y-b.y);for(let i=1;i<heads.length;i++)heads[i].y=Math.max(heads[i].y,heads[i-1].y+15*g);
+ for(let i=heads.length-1,lim=B;i>=0;i--,lim-=15*g)heads[i].y=Math.min(heads[i].y,lim);
+ const xl=X(F[idx].s)+8;heads.forEach(h=>{c.fillStyle=colOf[h.p];chemText(c,h.p+' '+Math.round(h.v*100)+'%',Math.min(xl,x1-90*g),h.y+4*g,13*g,'left');});
  // Cursor with the trace temperature at this frame.
- if(idx<N-1){const x=X(F[idx].s);c.strokeStyle=grid;c.lineWidth=1;c.beginPath();c.moveTo(x,T-4);c.lineTo(x,B);c.stroke();c.fillStyle=ink;c.font='12px system-ui,-apple-system,sans-serif';c.textAlign='center';c.fillText(Math.round(F[idx].T)+' °C',Math.max(L+30,Math.min(R-30,x)),T-8);}
+ if(idx<N-1){const x=X(F[idx].s);c.strokeStyle=grid;c.lineWidth=1;c.beginPath();c.moveTo(x,T-4);c.lineTo(x,B);c.stroke();c.fillStyle=ink;c.font=`${12*g}px system-ui,-apple-system,sans-serif`;c.textAlign='center';c.fillText(Math.round(F[idx].T)+' °C',Math.max(L+30,Math.min(R-30,x)),T-8);}
  c.textAlign='start';
 }
 function heroTick(now){heroRAF=0;if(heroLast)heroTime+=Math.min(50,now-heroLast);heroLast=now;drawHero();startHero();}
