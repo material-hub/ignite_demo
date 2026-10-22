@@ -425,7 +425,7 @@ summary { font-size:16px; font-weight:400; }
 @media print { #starfield,#cursor-glow,#cursor-swirl,.furnace-hero,.site-header,.site-footer,.plan-toolbar,#home,#state,.skip { display:none!important; } :root { --page:white; --panel:white; --ink:#182630; --mute:#546570; --line:#ccd5dc; } main { padding:0; } .reveal { opacity:1!important; transform:none!important; } .card.media { width:100%; margin-left:0; } .pane { animation:none!important; } }
 </style><script>
 /* Pages serves index.html with a 10 minute cache; a tab holding an older build reloads itself once. */
-window.__BUILD__ = "20261022-223554";
+window.__BUILD__ = "20261022-230000";
 (function () {
   try {
     fetch("version.json", { cache: "no-store" }).then(function (r) { return r.json(); })
@@ -453,7 +453,7 @@ window.__BUILD__ = "20261022-223554";
    <div class="examples" id="examples"></div><p class="search-note" id="home-note" role="status"></p>
   </div>
  <section class="library" aria-labelledby="library-title"><div class="library-heading"><h2 id="library-title">Explore a planned compound</h2><p id="library-count"></p></div><div class="compound-list" id="compound-list"></div></section>
- <section class="home-explain"><h2>Read the evidence behind the plan.</h2><div><p>The plan brings precursor rankings and temperature ranges together with reaction energies, synthesis conditions and phase evidence. Each compound keeps its own audit status and data limitations.</p><p>The Claude protocol is optional. It uses your own Anthropic key and the evidence held in the page.</p><button class="btn ghost" id="home-how">How it works</button></div></section>
+ <section class="home-explain"><h2>Read the evidence behind the plan.</h2><div><button class="btn ghost" id="home-how">How it works</button></div></section>
 </section>
 <section id="state" class="state-view" hidden aria-live="polite"></section>
 <section id="plan" hidden aria-label="Compound plan"><div class="plan-toolbar"><button class="text-button" data-home>Back to planner</button><form id="plan-search" method="get"><label for="plan-target">Compound</label><input id="plan-target" name="target" placeholder="Enter a compound" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="plan-list" autocomplete="off" spellcheck="false" required><button class="btn" type="submit">Show plan</button><ul class="suggest" id="plan-list" role="listbox" hidden></ul></form></div><p class="search-note" id="plan-note" role="status"></p><div id="plan-mount"></div></section>
