@@ -425,7 +425,7 @@ summary { font-size:16px; font-weight:400; }
 @media print { #starfield,#cursor-glow,#cursor-swirl,.furnace-hero,.site-header,.site-footer,.plan-toolbar,#home,#state,.skip { display:none!important; } :root { --page:white; --panel:white; --ink:#182630; --mute:#546570; --line:#ccd5dc; } main { padding:0; } .reveal { opacity:1!important; transform:none!important; } .card.media { width:100%; margin-left:0; } .pane { animation:none!important; } }
 </style><script>
 /* Pages serves index.html with a 10 minute cache; a tab holding an older build reloads itself once. */
-window.__BUILD__ = "20261022-231500";
+window.__BUILD__ = "20261023-000500";
 (function () {
   try {
     fetch("version.json", { cache: "no-store" }).then(function (r) { return r.json(); })
@@ -438,7 +438,221 @@ window.__BUILD__ = "20261022-231500";
   } catch (e) {}
 })();
 </script>
-</head><body>
+</head><body><!-- ignite Google sign-in gate. Insert this entire block immediately after <body>. -->
+<style id="ignite-auth-style">
+  html:has(#ignite-auth-gate:not([hidden])) { overflow: hidden; }
+  body:has(#ignite-auth-gate:not([hidden])) { overflow: hidden; }
+  #ignite-auth-gate, #ignite-auth-gate * { box-sizing: border-box; }
+  #ignite-auth-gate[hidden], #ignite-auth-signout[hidden], #ignite-auth-status[hidden] { display: none !important; }
+  #ignite-auth-gate {
+    position: fixed; inset: 0; z-index: 2147483000; display: flex;
+    align-items: center; justify-content: center; padding: 24px; overflow: auto;
+    font: inherit; color: var(--ink); background-color: var(--page);
+    background-image: radial-gradient(var(--line) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  #ignite-auth-gate .auth-gate-wrap {
+    position: relative; display: flex; width: min(1140px, 100%); max-height: calc(100dvh - 48px);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: auto;
+    background: var(--panel); box-shadow: 0 28px 80px color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  #ignite-auth-gate .auth-gate-card { flex: 0 0 52%; min-width: 0; padding: 44px 46px 28px; text-align: center; }
+  #ignite-auth-gate .auth-gate-logo { display: block; width: 112px; height: 112px; margin: 0 auto 20px; }
+  #ignite-auth-gate .auth-gate-brand { font: 500 40px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: -1px; margin: 0 0 14px; }
+  #ignite-auth-gate .auth-gate-title { font-size: 22px; line-height: 1.35; font-weight: 500; margin: 0 0 12px; }
+  #ignite-auth-gate .auth-gate-sub { color: var(--mute); font-size: 15px; line-height: 1.7; margin: 0 auto 26px; max-width: 36ch; }
+  #ignite-auth-gate button { font: inherit; cursor: pointer; }
+  #ignite-auth-gate .auth-gate-button {
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+    min-height: 48px; max-width: 100%; padding: 12px 24px; border: 1px solid var(--line);
+    border-radius: 999px; background: var(--button); color: var(--button-text); font-size: 15px; font-weight: 500;
+  }
+  #ignite-auth-gate .auth-gate-button:hover { box-shadow: 0 4px 16px color-mix(in srgb, var(--ink) 15%, transparent); }
+  #ignite-auth-gate button:focus-visible, #ignite-auth-signout:focus-visible { outline: 3px solid var(--teal); outline-offset: 4px; }
+  #ignite-auth-gate .auth-gate-button:disabled { opacity: .65; cursor: wait; }
+  #ignite-auth-gate .auth-gate-message { min-height: 48px; margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: var(--mute); overflow-wrap: anywhere; }
+  #ignite-auth-gate .auth-gate-message[data-error] { color: var(--fail); }
+  #ignite-auth-gate .auth-gate-owner { margin: 20px 0 0; padding-top: 20px; border-top: 1px solid var(--line); color: var(--mute); font-size: 13px; line-height: 1.7; }
+  #ignite-auth-gate .auth-gate-owner a { color: var(--teal); }
+  #ignite-auth-gate .auth-gate-theme { margin-top: 12px; padding: 8px 16px; border: 0; border-radius: 999px; color: var(--mute); background: transparent; font-size: 13px; min-height: 44px; }
+  #ignite-auth-gate .auth-gate-theme:hover { background: var(--soft); color: var(--ink); }
+  #ignite-auth-gate .auth-gate-show { flex: 1 1 48%; min-width: 0; min-height: 560px; display: flex; flex-direction: column; justify-content: center; border-left: 1px solid var(--line); background: var(--page); overflow: hidden; }
+  #ignite-auth-gate .auth-gate-show canvas { display: block; width: 100%; height: 350px; }
+  #ignite-auth-gate .auth-gate-caption { padding: 20px 34px 34px; }
+  #ignite-auth-gate .auth-gate-caption p { margin: 0 0 8px; color: var(--teal); font-size: 14px; }
+  #ignite-auth-gate .auth-gate-caption strong { font-size: 22px; line-height: 1.5; font-weight: 500; }
+  #ignite-auth-signout { font: inherit; font-size: 13px; white-space: nowrap; padding: 8px 14px; min-height: 44px; border: 1px solid var(--line); border-radius: 999px; background: var(--soft); color: var(--ink); cursor: pointer; }
+  #ignite-auth-status { color: var(--fail); font-size: 12px; max-width: 24ch; }
+  @media (max-width: 980px) {
+    #ignite-auth-gate .auth-gate-show { display: none; }
+    #ignite-auth-gate .auth-gate-wrap { max-width: 580px; }
+    #ignite-auth-gate .auth-gate-card { flex: 1; }
+  }
+  @media (max-width: 480px) {
+    #ignite-auth-gate { padding: 16px; }
+    #ignite-auth-gate .auth-gate-wrap { max-height: calc(100dvh - 32px); }
+    #ignite-auth-gate .auth-gate-card { padding: 28px 22px 20px; }
+    #ignite-auth-gate .auth-gate-logo { width: 88px; height: 88px; }
+    #ignite-auth-gate .auth-gate-brand { font-size: 34px; }
+    #ignite-auth-signout { padding: 8px 6px; font-size: 12px; }
+    body:has(#ignite-auth-signout:not([hidden])) .header-links { gap: 0; }
+    body:has(#ignite-auth-signout:not([hidden])) .header-links .text-button { padding-inline: 5px; }
+    body:has(#ignite-auth-signout:not([hidden])) .site-header { padding-inline: 8px; gap: 2px; }
+  }
+  @media print { body:has(#ignite-auth-gate:not([hidden])) > :not(#ignite-auth-gate) { display: none !important; } }
+</style>
+<div id="ignite-auth-gate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="ignite-auth-title" aria-describedby="ignite-auth-sub">
+  <div class="auth-gate-wrap">
+    <div class="auth-gate-card">
+      <img id="ignite-auth-logo" class="auth-gate-logo" alt="" width="112" height="112">
+      <div class="auth-gate-brand">ignite</div>
+      <h2 id="ignite-auth-title" class="auth-gate-title">Sign in to the synthesis planner</h2>
+      <p id="ignite-auth-sub" class="auth-gate-sub">Explore precursors, firing temperatures and synthesis plans with your Google account.</p>
+      <button id="ignite-auth-google" class="auth-gate-button" type="button" disabled>
+        <!-- Google mark copied from the supplied Kosmos gate. -->
+        <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg><span>Sign in with Google</span>
+      </button>
+      <p id="ignite-auth-message" class="auth-gate-message" role="status" aria-live="polite">Loading sign-in. If this takes too long, check your connection and reload.</p>
+      <p class="auth-gate-owner">Md Habibur Rahman<br>School of Materials Engineering, Purdue University<br><a href="mailto:imd.habiburrahman@gmail.com">imd.habiburrahman@gmail.com</a></p>
+      <button id="ignite-auth-theme" class="auth-gate-theme" type="button">Switch colour theme</button>
+      <noscript><p>Enable JavaScript and reload to sign in.</p></noscript>
+    </div>
+    <div class="auth-gate-show" aria-hidden="true">
+      <canvas id="ignite-auth-preview" width="800" height="600"></canvas>
+      <div class="auth-gate-caption"><p>From precursors to a synthesis plan</p><strong>Plan the next material.</strong></div>
+    </div>
+  </div>
+</div>
+<script type="module" id="ignite-auth-script">
+  const gate = document.getElementById('ignite-auth-gate');
+  const google = document.getElementById('ignite-auth-google');
+  const message = document.getElementById('ignite-auth-message');
+  const theme = document.getElementById('ignite-auth-theme');
+  const originalTheme = document.getElementById('theme');
+  document.getElementById('ignite-auth-logo').src = document.querySelector('link[rel="icon"]').href;
+  const signout = document.createElement('button');
+  signout.id = 'ignite-auth-signout';
+  signout.type = 'button';
+  signout.textContent = 'Sign out';
+  signout.hidden = true;
+  const status = document.createElement('span');
+  status.id = 'ignite-auth-status';
+  status.setAttribute('role', 'status');
+  status.hidden = true;
+  document.querySelector('.header-links').append(signout, status);
+  const syncTheme = () => { theme.textContent = document.documentElement.dataset.theme === 'light' ? 'Dark theme' : 'Light theme'; };
+  theme.addEventListener('click', () => {
+    if (typeof originalTheme.onclick === 'function') originalTheme.click();
+    else {
+      // The unbuilt source template has no data and stops before its theme handler.
+      const dark = document.documentElement.dataset.theme !== 'dark';
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      originalTheme.textContent = dark ? 'Light theme' : 'Dark theme';
+      originalTheme.setAttribute('aria-pressed', String(dark));
+    }
+  });
+  new MutationObserver(syncTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  syncTheme();
+
+  // Keep the existing page in place and restore its original inert state on sign-in.
+  const background = [...document.body.children].filter(el => el !== gate && !['STYLE', 'SCRIPT'].includes(el.tagName));
+  const originalInert = background.map(el => el.inert);
+  function setLocked(locked) {
+    gate.hidden = !locked;
+    background.forEach((el, i) => { el.inert = locked || originalInert[i]; });
+    signout.hidden = locked;
+    if (locked) theme.focus({ preventScroll: true });
+    else document.querySelector('.site-header .brand').focus({ preventScroll: true });
+  }
+  setLocked(true);
+  gate.addEventListener('keydown', event => {
+    if (event.key !== 'Tab') return;
+    const controls = [...gate.querySelectorAll('button:not(:disabled), a[href]')];
+    const first = controls[0], last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+
+  // Mirror ignite's actual furnace canvas rather than add a second illustration.
+  const source = document.getElementById('hero-grid');
+  const preview = document.getElementById('ignite-auth-preview');
+  const ctx = preview.getContext('2d');
+  let frame;
+  function drawPreview() {
+    if (!gate.hidden && preview.clientWidth && source.width && source.height) {
+      const ratio = Math.min(devicePixelRatio || 1, 2);
+      const w = Math.round(preview.clientWidth * ratio), h = Math.round(preview.clientHeight * ratio);
+      if (preview.width !== w || preview.height !== h) { preview.width = w; preview.height = h; }
+      ctx.clearRect(0, 0, w, h);
+      const scale = Math.min(w / source.width, h / source.height);
+      ctx.drawImage(source, (w - source.width * scale) / 2, (h - source.height * scale) / 2, source.width * scale, source.height * scale);
+    }
+    frame = requestAnimationFrame(drawPreview);
+  }
+  drawPreview();
+  addEventListener('pagehide', () => cancelAnimationFrame(frame));
+  addEventListener('pageshow', event => { if (event.persisted) drawPreview(); });
+
+  function showError(error) {
+    const messages = {
+      'auth/unauthorized-domain': 'This domain is not authorized for Google sign-in. The site owner must add ' + location.hostname + ' in Firebase Authentication > Settings > Authorized domains for wbg-library, then reload.',
+      'auth/popup-blocked': 'Your browser blocked the sign-in window. Allow popups for this site and try again.',
+      'auth/popup-closed-by-user': 'The sign-in window was closed. Click Sign in with Google to try again.',
+      'auth/cancelled-popup-request': 'Another sign-in window was opened. Finish there or try again.',
+      'auth/network-request-failed': 'Sign-in could not connect. Check your connection and try again.',
+      'auth/operation-not-allowed': 'Google sign-in is not enabled. The site owner must enable Google in Firebase Authentication for wbg-library.'
+    };
+    message.textContent = messages[error.code] || 'Sign-in failed. Please try again. Error: ' + (error.code || 'service unavailable');
+    message.dataset.error = '';
+  }
+  try {
+    const [{ initializeApp }, { initializeAuth, inMemoryPersistence, browserPopupRedirectResolver, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js')
+    ]);
+    const app = initializeApp({
+      apiKey: 'AIzaSyCnUQ0B8W1296f1JQdYfEFcKArT1ryb-5g',
+      authDomain: 'wbg-library.firebaseapp.com', projectId: 'wbg-library',
+      storageBucket: 'wbg-library.firebasestorage.app', messagingSenderId: '871008082281',
+      appId: '1:871008082281:web:1b2aeeac9c7b03a7e305f8'
+    }, 'ignite-signin');
+    // Kosmos requires a fresh sign-in on every load, so use memory persistence.
+    const auth = initializeAuth(app, { persistence: inMemoryPersistence, popupRedirectResolver: browserPopupRedirectResolver });
+    const provider = new GoogleAuthProvider();
+    onAuthStateChanged(auth, user => {
+      setLocked(!user);
+      google.disabled = false;
+      delete message.dataset.error;
+      message.textContent = 'Use your Google account to continue.';
+      if (!user) google.focus({ preventScroll: true });
+    }, showError);
+    google.addEventListener('click', async () => {
+      google.disabled = true;
+      delete message.dataset.error;
+      message.textContent = 'Finish signing in in the Google window.';
+      try { await signInWithPopup(auth, provider); }
+      catch (error) { showError(error); }
+      finally { google.disabled = false; }
+    });
+    signout.addEventListener('click', async () => {
+      signout.disabled = true;
+      status.hidden = true;
+      try { await signOut(auth); }
+      catch (error) { status.textContent = 'Could not sign out. Please try again.'; status.hidden = false; }
+      finally { signout.disabled = false; }
+    });
+  } catch (error) {
+    message.dataset.error = '';
+    message.textContent = 'Google sign-in could not load. Check your connection, allow www.gstatic.com and reload.';
+  }
+</script>
+<!-- End ignite Google sign-in gate. -->
+
 <canvas id="starfield" aria-hidden="true"></canvas><div id="cursor-glow" aria-hidden="true"></div><canvas id="cursor-swirl" aria-hidden="true"></canvas>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header"><button class="brand text-button" data-home><span class="tt">ignite</span></button><nav class="header-links" aria-label="Main navigation"><button class="text-button" data-home>Planner</button><button class="text-button" id="nav-how">How it works</button><button class="text-button" id="nav-bench">Benchmark</button><button class="text-button theme-button" id="theme" aria-label="Switch colour theme">Light theme</button></nav></header>
