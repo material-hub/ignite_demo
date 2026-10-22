@@ -4,6 +4,14 @@ ignite suggests how to make an inorganic compound by solid-state synthesis. Type
 
 This demo copy holds the stored plans of 20 compounds. The full library of 13,031 compounds is on the live site. For each compound in the library the full plan was computed ahead of time. It adds Materials Project reaction energies, NIST-JANAF heating data, crucible checks, oxygen vacancies, ReactCA phase evolution and phonons. Any other formula gets a lighter plan, computed in your browser from 64,375 published recipes of 30,993 compounds. That plan uses the same learned models and leaves out the physics.
 
+## Data collected with language models
+
+ignite is built on synthesis data that text mining and language models read out of published papers.
+
+- The 64,375 recipes come from the text-mined dataset of Kononova et al. (2019) and the dataset of Lee et al. (2025), which was mined with a large language model. Lee et al. also give the impurity labels.
+- Our own language-model agents, mostly Claude, read 1,233 newer papers and extracted 3,008 synthesis records across 12 materials families. Each record was checked against its paper: 1,135 passed, 1,739 wait for expert review and 134 were rejected. These records are kept out of the planner's knowledge base. The Claude benchmark questions come from the papers published in 2025 or later.
+- Claude writes the optional lab protocol, and the Valency MCP was used to check related work.
+
 ## How it works
 
 Precursor sets come from the recipes of similar known compounds and are ranked by a model trained on the Kononova et al. recipes. The firing temperature is a Huber regression on the nearest recipes and on element properties, with a conformal range. When nothing in the data is close enough, it gives no temperature and says so. The atmosphere comes from a small classifier. The dwell time and heating steps come from similar recipes. Impurity phases come from the Lee et al. 2025 labels of the nearest syntheses. Fixed rules mark each claim trust, caution, abstain or unavailable. None of this uses a language model. The Claude protocol tab is optional and calls Claude from your browser with your own API key.
