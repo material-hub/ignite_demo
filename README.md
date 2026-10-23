@@ -10,7 +10,8 @@ ignite is built on synthesis data that text mining and language models read out 
 
 - The 64,375 recipes come from the text-mined dataset of Kononova et al. (2019) and the dataset of Lee et al. (2025), which was mined with a large language model. Lee et al. also give the impurity labels.
 - Our own language-model agents, mostly Opus, read 1,233 newer papers and extracted 3,008 synthesis records across 12 materials families. Each record was checked against its paper: 1,135 passed, 1,739 wait for expert review and 134 were rejected. These records are kept out of the planner's knowledge base. The Opus benchmark questions come from the papers published in 2025 or later.
-- Opus writes the optional lab protocol, and the Valency MCP was used to check related work.
+- With Opus, ignite runs as a multi-agent system: a lead agent passes the evidence to specialist agents, and a critic checks the answer last. The page's Opus protocol tab makes one call with your own API key.
+- The Valency MCP was used to check related work.
 
 ## How it works
 
