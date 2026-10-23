@@ -1,5 +1,7 @@
 # ignite
 
+Built for the OSI Hackathon 2026: Build the Future of Scientific Intelligence.
+
 ignite suggests how to make an inorganic compound by solid-state synthesis. Type a formula at https://material-hub.github.io/ignite/ and it returns precursor sets, a firing temperature with a range, the furnace atmosphere and the impurity phases seen in similar syntheses.
 
 This demo copy holds the stored plans of 20 compounds. The full library of 13,031 compounds is on the live site. For each compound in the library the full plan was computed ahead of time. It adds Materials Project reaction energies, NIST-JANAF heating data, crucible checks, oxygen vacancies, ReactCA phase evolution and phonons. Any other formula gets a lighter plan, computed in your browser from 64,375 published recipes of 30,993 compounds. That plan uses the same learned models and leaves out the physics.
