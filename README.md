@@ -9,12 +9,12 @@ This demo copy holds the stored plans of 20 compounds. The full library of 13,03
 ignite is built on synthesis data that text mining and language models read out of published papers.
 
 - The 64,375 recipes come from the text-mined dataset of Kononova et al. (2019) and the dataset of Lee et al. (2025), which was mined with a large language model. Lee et al. also give the impurity labels.
-- Our own language-model agents, mostly Claude, read 1,233 newer papers and extracted 3,008 synthesis records across 12 materials families. Each record was checked against its paper: 1,135 passed, 1,739 wait for expert review and 134 were rejected. These records are kept out of the planner's knowledge base. The Claude benchmark questions come from the papers published in 2025 or later.
-- Claude writes the optional lab protocol, and the Valency MCP was used to check related work.
+- Our own language-model agents, mostly Opus, read 1,233 newer papers and extracted 3,008 synthesis records across 12 materials families. Each record was checked against its paper: 1,135 passed, 1,739 wait for expert review and 134 were rejected. These records are kept out of the planner's knowledge base. The Opus benchmark questions come from the papers published in 2025 or later.
+- Opus writes the optional lab protocol, and the Valency MCP was used to check related work.
 
 ## How it works
 
-Precursor sets come from the recipes of similar known compounds and are ranked by a model trained on the Kononova et al. recipes. The firing temperature is a Huber regression on the nearest recipes and on element properties, with a conformal range. When nothing in the data is close enough, it gives no temperature and says so. The atmosphere comes from a small classifier. The dwell time and heating steps come from similar recipes. Impurity phases come from the Lee et al. 2025 labels of the nearest syntheses. Fixed rules mark each claim trust, caution, abstain or unavailable. None of this uses a language model. The Claude protocol tab is optional and calls Claude from your browser with your own API key.
+Precursor sets come from the recipes of similar known compounds and are ranked by a model trained on the Kononova et al. recipes. The firing temperature is a Huber regression on the nearest recipes and on element properties, with a conformal range. When nothing in the data is close enough, it gives no temperature and says so. The atmosphere comes from a small classifier. The dwell time and heating steps come from similar recipes. Impurity phases come from the Lee et al. 2025 labels of the nearest syntheses. Fixed rules mark each claim trust, caution, abstain or unavailable. None of this uses a language model. The Opus protocol tab is optional and calls Opus from your browser with your own API key.
 
 ## Accuracy on held-out data
 
@@ -30,20 +30,20 @@ Precursor sets come from the recipes of similar known compounds and are ranked b
 
 The temperature model and the neighbour median are close. The 95% interval of their gap runs from -0.1 to 10.1 °C.
 
-## Claude benchmark
+## Opus benchmark
 
-In October 2026 we asked Claude (claude-opus-5-5) the same questions blind, on recipes published in 2025 or later. In the "Claude with ignite" column each question also carried ignite's own answer and its held-out accuracy.
+In October 2026 we asked Opus (claude-opus-5-5) the same questions blind, on recipes published in 2025 or later. In the "Opus with ignite" column each question also carried ignite's own answer and its held-out accuracy.
 
-| Task | Items | Claude | Claude with ignite | ignite |
+| Task | Items | Opus | Opus with ignite | ignite |
 |---|---|---|---|---|
 | Right precursor set in top 5 | 242 | 53.7% | 71.5% | 71.5% |
-| Right precursor set in top 5, papers after Claude's cutoff | 23 | 60.9% | 69.6% | 69.6% |
+| Right precursor set in top 5, papers after Opus's cutoff | 23 | 60.9% | 69.6% | 69.6% |
 | Solid-state or sol-gel route | 240 | 82.1% | 82.1% | 62.9% |
 | Furnace atmosphere | 159 | 95.0% | 96.2% | 82.4% |
 | Dwell time, mean error | 261 | 4.2 h | 4.2 h | 4.7 h |
 | Right precursor set in top 5, older text-mined set | 805 | 81.7% | 82.9% | 81.6% |
 
-Claude's training data runs to June 2026, so most of these papers could be in it. Only the 23 papers published after that date are unseen, and on those every gap falls inside its 95% interval. With ignite's answer in front of it, Claude beat ignite alone on the route (82.1% against 62.9%), the atmosphere (96.2% against 82.4%) and the dwell time (4.2 h against 4.7 h), and each of these gaps lies outside its 95% interval. This table keeps the tasks where Claude with ignite scored as well as or better than both. On firing temperature Claude alone had the lower error (105.4 °C against 124.8 °C for ignite on 241 syntheses).
+Opus's training data runs to June 2026, so most of these papers could be in it. Only the 23 papers published after that date are unseen, and on those every gap falls inside its 95% interval. With ignite's answer in front of it, Opus beat ignite alone on the route (82.1% against 62.9%), the atmosphere (96.2% against 82.4%) and the dwell time (4.2 h against 4.7 h), and each of these gaps lies outside its 95% interval. This table keeps the tasks where Opus with ignite scored as well as or better than both. On firing temperature Opus alone had the lower error (105.4 °C against 124.8 °C for ignite on 241 syntheses).
 
 ## Files
 
