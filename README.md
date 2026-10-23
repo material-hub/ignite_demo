@@ -33,7 +33,7 @@ The temperature model and the neighbour median are close. The 95% interval of th
 
 ## Opus benchmark
 
-In October 2026 we asked Opus (claude-opus-5-5) the same questions blind, on recipes published in 2025 or later. In the "Opus with ignite" column each question also carried ignite's own answer and its held-out accuracy.
+In October 2026 we asked Opus 5.5 the same questions blind, on recipes published in 2025 or later. In the "Opus with ignite" column each question also carried ignite's own answer and its held-out accuracy.
 
 | Task | Items | Opus | Opus with ignite | ignite |
 |---|---|---|---|---|
