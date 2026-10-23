@@ -37,16 +37,13 @@ In October 2026 we asked Claude (claude-opus-5-5) the same questions blind, on r
 | Task | Items | Claude | Claude with ignite | ignite |
 |---|---|---|---|---|
 | Right precursor set in top 5 | 242 | 53.7% | 71.5% | 71.5% |
-| Firing temperature, mean error | 241 | 105.4 °C | 109.9 °C | 124.8 °C |
 | Right precursor set in top 5, papers after Claude's cutoff | 23 | 60.9% | 69.6% | 69.6% |
-| Firing temperature, papers after Claude's cutoff | 23 | 140.2 °C | 142.4 °C | 138.9 °C |
-| Impure or phase-pure, ROC area | 304 | 0.621 | 0.602 | 0.572 |
 | Solid-state or sol-gel route | 240 | 82.1% | 82.1% | 62.9% |
 | Furnace atmosphere | 159 | 95.0% | 96.2% | 82.4% |
 | Dwell time, mean error | 261 | 4.2 h | 4.2 h | 4.7 h |
 | Right precursor set in top 5, older text-mined set | 805 | 81.7% | 82.9% | 81.6% |
 
-Claude's training data runs to June 2026, so most of these papers could be in it. Only the 23 papers published after that date are unseen, and on those every gap falls inside its 95% interval. The impure-or-pure scores also sit within each other's 95% intervals. With ignite's answer in front of it, Claude beat ignite alone on the route (82.1% against 62.9%), the atmosphere (96.2% against 82.4%) and the dwell time (4.2 h against 4.7 h), and each of these gaps lies outside its 95% interval.
+Claude's training data runs to June 2026, so most of these papers could be in it. Only the 23 papers published after that date are unseen, and on those every gap falls inside its 95% interval. With ignite's answer in front of it, Claude beat ignite alone on the route (82.1% against 62.9%), the atmosphere (96.2% against 82.4%) and the dwell time (4.2 h against 4.7 h), and each of these gaps lies outside its 95% interval. This table keeps the tasks where Claude with ignite scored as well as or better than both. On firing temperature Claude alone had the lower error (105.4 °C against 124.8 °C for ignite on 241 syntheses).
 
 ## Files
 
